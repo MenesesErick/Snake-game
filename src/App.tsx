@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import {
   CELLS,
   DIFFICULTIES,
@@ -180,7 +180,7 @@ function Background() {
         aria-hidden
         viewBox="0 0 16 16"
         className="deco-float pointer-events-none fixed -right-10 top-16 z-0 h-64 w-64 opacity-[0.05]"
-        style={{ ['--rot' as string]: '14deg' }}
+        style={{ '--rot': '14deg' } as CSSProperties}
       >
         <path d="M4 3h8v5H4v5h8" stroke="#4ADE80" strokeWidth="1.4" fill="none" />
       </svg>
@@ -188,7 +188,7 @@ function Background() {
         aria-hidden
         viewBox="0 0 16 16"
         className="deco-float pointer-events-none fixed -left-12 bottom-10 z-0 h-72 w-72 opacity-[0.045]"
-        style={{ ['--rot' as string]: '-18deg', animationDuration: '9s' }}
+        style={{ '--rot': '-18deg', animationDuration: '9s' } as CSSProperties}
       >
         <path d="M4 3h8v5H4v5h8" stroke="#FBBF24" strokeWidth="1.4" fill="none" />
       </svg>
@@ -529,6 +529,7 @@ export default function App() {
   /* ---------------- toque (deslizar) ---------------- */
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
+    if (!t) return;
     touchRef.current = { x: t.clientX, y: t.clientY };
   };
   const onTouchEnd = (e: React.TouchEvent) => {
@@ -536,6 +537,7 @@ export default function App() {
     touchRef.current = null;
     if (!st) return;
     const t = e.changedTouches[0];
+    if (!t) return;
     const dx = t.clientX - st.x;
     const dy = t.clientY - st.y;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) {

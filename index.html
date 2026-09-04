@@ -3,18 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Jogo da cobrinha moderno: teclado e toque, pausa, dificuldades, recorde e modo automático em que a IA joga até vencer." />
+    <meta
+      name="description"
+      content="Jogo da cobrinha moderno: teclado e toque, pausa, dificuldades, recorde e modo automático em que a IA joga até vencer."
+    />
     <meta name="theme-color" content="#07231A" />
     <title>Cobrinha Arcade — Jogo da Snake</title>
+
+    <!-- Fontes carregadas sem bloquear a renderização -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
+
     <style>
-      html { background: #07231a; }
+      html {
+        background: #07231a;
+      }
+      #root:empty::after {
+        content: "Carregando a cobrinha…";
+        display: block;
+        padding-top: 42vh;
+        text-align: center;
+        color: #8fc7ab;
+        font-family: "Trebuchet MS", sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+      }
     </style>
+
+    <!-- Vigia de boot: se o app não montar, mostra um aviso em vez de tela em branco -->
+    <script>
+      window.setTimeout(function () {
+        try {
+          var root = document.getElementById("root");
+          if (root && !window.__APP_BOOTED__ && !root.childElementCount) {
+            root.innerHTML =
+              '<div style="min-height:100vh;display:grid;place-items:center;background:#07231a;color:#d9f0e4;font-family:Trebuchet MS,sans-serif;padding:24px;text-align:center">' +
+              '<div style="max-width:440px">' +
+              '<p style="font-family:monospace;font-weight:bold;color:#FBBF24;letter-spacing:0.08em;margin-bottom:12px">FALHA AO CARREGAR O JOGO</p>' +
+              '<p style="font-size:14px;opacity:0.85;line-height:1.5">O ambiente bloqueou o carregamento do app. Recarregue a página para tentar de novo.</p>' +
+              '<button type="button" onclick="location.reload()" style="margin-top:20px;padding:12px 22px;border-radius:10px;border:none;border-bottom:4px solid #B45309;background:#FBBF24;color:#3A2A05;font-weight:bold;cursor:pointer">RECARREGAR</button>' +
+              "</div></div>";
+          }
+        } catch (e) {}
+      }, 7000);
+    </script>
   </head>
   <body>
     <div id="root"></div>
