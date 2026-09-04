@@ -1,1 +1,167 @@
 @import "tailwindcss";
+
+@theme {
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+  --font-body: "Space Grotesk", "Trebuchet MS", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #07231a;
+  color: #d9f0e4;
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* ---------- cenário de fundo ---------- */
+.scene-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(1100px 700px at 88% -12%, rgba(52, 211, 153, 0.14), transparent 62%),
+    radial-gradient(900px 620px at -12% 112%, rgba(251, 191, 36, 0.1), transparent 62%),
+    linear-gradient(158deg, #0b2e22 0%, #07231a 46%, #0a2b20 100%);
+}
+
+.scene-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(217, 240, 228, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 240, 228, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 92% 82% at 50% 38%, black 28%, transparent 76%);
+}
+
+/* ---------- vaga-lumes ---------- */
+.firefly {
+  position: fixed;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 0;
+  animation:
+    drift 11s ease-in-out infinite alternate,
+    twinkle 3.4s ease-in-out infinite;
+}
+
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(26px, -38px, 0); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.85; }
+}
+
+/* ---------- painéis e moldura ---------- */
+.panel {
+  background: linear-gradient(180deg, rgba(20, 62, 46, 0.92), rgba(12, 42, 31, 0.94));
+  border: 2px solid rgba(64, 145, 108, 0.45);
+  border-radius: 10px;
+  box-shadow:
+    0 16px 36px -20px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(217, 240, 228, 0.07);
+}
+
+.board-frame {
+  background: linear-gradient(180deg, #1c5440, #123a2c);
+  border: 3px solid #0a2a1f;
+  border-radius: 14px;
+  box-shadow:
+    0 34px 80px -32px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(217, 240, 228, 0.14);
+}
+
+.label-px {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: #8fc7ab;
+}
+
+.kbd {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  line-height: 1;
+  padding: 5px 6px 4px;
+  border-radius: 6px;
+  background: #0c3325;
+  border: 1.5px solid #2e6b4f;
+  border-bottom-width: 3.5px;
+  color: #bee7d2;
+  white-space: nowrap;
+}
+
+/* ---------- animações ---------- */
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ledpulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55); }
+  50%      { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+}
+
+@keyframes stripes {
+  from { background-position: 0 0; }
+  to   { background-position: 28px 0; }
+}
+
+@keyframes floaty {
+  from { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  to   { transform: translateY(-18px) rotate(var(--rot, 0deg)); }
+}
+
+@keyframes wobble {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.bar-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.22) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 28px 28px;
+  animation: stripes 1s linear infinite;
+}
+
+.scanlines {
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(9, 40, 28, 0.05) 0 2px,
+    transparent 2px 4px
+  );
+}
+
+.deco-float {
+  animation: floaty 7s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .firefly,
+  .deco-float,
+  .bar-stripes {
+    animation: none !important;
+  }
+}
