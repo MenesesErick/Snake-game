@@ -20,6 +20,24 @@ import {
 import { draw } from './game/render';
 import { ensureAudio, isMuted, sfx, toggleMuted } from './game/audio';
 
+/* armazenamento seguro — sandboxes/privacidade podem bloquear localStorage */
+const store = {
+  get(key: string): string | null {
+    try {
+      return window.localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set(key: string, value: string) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch {
+      /* noop */
+    }
+  },
+};
+
 /* ------------------------------------------------------------------ */
 /* ícones                                                              */
 /* ------------------------------------------------------------------ */
@@ -264,17 +282,17 @@ export default function App() {
   const [status, setStatus] = useState<Status>('idle');
   const [mode, setMode] = useState<Mode>('manual');
   const [diff, setDiff] = useState<DifficultyKey>(() => {
-    const saved = localStorage.getItem('cobra.diff') as DifficultyKey | null;
+    const saved = store.get('cobra.diff') as DifficultyKey | null;
     return saved && DIFF_ORDER.includes(saved) ? saved : 'normal';
   });
   const [autoSpeed, setAutoSpeed] = useState<AutoSpeed>(() => {
-    const n = Number(localStorage.getItem('cobra.speed'));
+    const n = Number(store.get('cobra.speed'));
     return n === 1 || n === 2 || n === 4 ? (n as AutoSpeed) : 2;
   });
   const [score, setScore] = useState(0);
   const [len, setLen] = useState(3);
   const [ticks, setTicks] = useState(0);
-  const [best, setBest] = useState(() => Number(localStorage.getItem('cobra.best')) || 0);
+  const [best, setBest] = useState(() => Number(store.get('cobra.best')) || 0);
   const [muted, setMutedState] = useState(isMuted());
   const [newRecord, setNewRecord] = useState(false);
   const [popKey, setPopKey] = useState(0);
@@ -352,13 +370,13 @@ export default function App() {
 
   const selectDiff = (d: DifficultyKey) => {
     setDiff(d);
-    localStorage.setItem('cobra.diff', d);
+    store.set('cobra.diff', d);
     gameRef.current!.mult = DIFFICULTIES[d].mult;
   };
 
   const selectSpeed = (s: AutoSpeed) => {
     setAutoSpeed(s);
-    localStorage.setItem('cobra.speed', String(s));
+    store.set('cobra.speed', String(s));
   };
 
   const handleDir = (d: Vec) => {
@@ -375,14 +393,15 @@ export default function App() {
     if (g.mode === 'manual' && g.score > bestRef.current) {
       setBest(g.score);
       setNewRecord(true);
-      localStorage.setItem('cobra.best', String(g.score));
+      store.set('cobra.best', String(g.score));
     }
   };
 
   /* ---------------- loop principal ---------------- */
   useEffect(() => {
-    const cv = canvasRef.current!;
-    const ctx = cv.getContext('2d')!;
+    const cv = canvasRef.current;
+    const ctx = cv ? cv.getContext('2d') : null;
+    if (!cv || !ctx) return;
     let raf = 0;
     let last = performance.now();
 
@@ -438,8 +457,9 @@ export default function App() {
 
   /* ---------------- canvas responsivo ---------------- */
   useEffect(() => {
-    const wrap = wrapRef.current!;
-    const cv = canvasRef.current!;
+    const wrap = wrapRef.current;
+    const cv = canvasRef.current;
+    if (!wrap || !cv || typeof ResizeObserver === 'undefined') return;
     const ro = new ResizeObserver(() => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const size = Math.round(wrap.clientWidth * dpr);
